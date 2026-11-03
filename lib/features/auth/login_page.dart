@@ -87,11 +87,26 @@ class _LoginPageState extends State<LoginPage> {
                 child: const Text('Masuk'),
               ),
               TextButton(
-                onPressed: () {
-                  Navigator.push(
+                onPressed: () async {
+                  final emailTerdaftar = await Navigator.push<String>(
                     context,
-                    MaterialPageRoute(builder: (_) => const RegisterPage()),
+                    MaterialPageRoute(
+                      builder: (_) => const RegisterPage(),
+                    ),
                   );
+
+                  debugPrint('EMAIL DITERIMA LOGIN: $emailTerdaftar');
+
+                  if (!mounted) return;
+
+                  if (emailTerdaftar != null && emailTerdaftar.isNotEmpty) {
+                    _email.value = TextEditingValue(
+                      text: emailTerdaftar,
+                      selection: TextSelection.collapsed(
+                        offset: emailTerdaftar.length,
+                      ),
+                    );
+                  }
                 },
                 child: const Text('Belum punya akun? Daftar'),
               ),

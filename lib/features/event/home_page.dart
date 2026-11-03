@@ -1,17 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import '../../../core/dummy/dummy_events.dart';
+import '../../../core/dummy/dummy_users.dart';
+
 import 'event_provider.dart';
 import 'search_filter_page.dart';
 import 'event_detail_page.dart';
 
+import '../ticket/ticket_provider.dart';
+
 class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+  final DummyUser user;
+
+  const HomePage({super.key, required this.user});
 
   @override
   Widget build(BuildContext context) {
-    // Membaca state dari EventProvider 
+    // Membaca state dari EventProvider
     final eventProvider = context.watch<EventProvider>();
+    final ticketProvider = context.watch<TicketProvider>();
     final events = eventProvider.filteredEvents;
 
     return Scaffold(
@@ -23,7 +31,7 @@ class HomePage extends StatelessWidget {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (_) => const SearchFilterPage()),
+                MaterialPageRoute(builder: (_) => SearchFilterPage(user: user)),
               );
             },
           ),
@@ -56,7 +64,8 @@ class HomePage extends StatelessWidget {
                         width: 50,
                         height: 50,
                         fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) => const Icon(Icons.event, size: 40),
+                        errorBuilder: (_, __, ___) =>
+                            const Icon(Icons.event, size: 40),
                       ),
                     ),
                     title: Text(
@@ -64,13 +73,18 @@ class HomePage extends StatelessWidget {
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                     subtitle: Text(
-                      '${event.eventDate.day}/${event.eventDate.month}/${event.eventDate.year} • ${venue?.regency ?? '-'}\nSisa Kuota: ${event.ticketQuota}',
+                      '${event.eventDate.day}/${event.eventDate.month}/${event.eventDate.year} • ${venue?.regency ?? '-'}\n'
+                      'Sisa Kuota: ${ticketProvider.getRemainingQuota(event.id)}',
                     ),
                     isThreeLine: true,
                     trailing: Text(
-                      event.ticketPrice == 0 ? 'GRATIS' : 'Rp ${event.ticketPrice}',
+                      event.ticketPrice == 0
+                          ? 'GRATIS'
+                          : 'Rp ${event.ticketPrice}',
                       style: TextStyle(
-                        color: event.ticketPrice == 0 ? Colors.green : Colors.deepOrange,
+                        color: event.ticketPrice == 0
+                            ? Colors.green
+                            : Colors.deepOrange,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -78,7 +92,8 @@ class HomePage extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (_) => EventDetailPage(event: event),
+                          builder: (_) =>
+                              EventDetailPage(event: event, user: user),
                         ),
                       );
                     },

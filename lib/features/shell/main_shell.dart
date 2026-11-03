@@ -4,6 +4,7 @@ import '../../core/dummy/dummy_users.dart';
 import '../../core/widgets/placeholder_page.dart';
 import '../auth/profile_page.dart';
 import '../event/home_page.dart';
+import '../ticket/ticket_page.dart';
 
 /// Halaman utama dengan menu di bawah (bottom navigation).
 /// Menu berbeda untuk peserta dan penyelenggara (sesuai PRD 11.3).
@@ -25,8 +26,11 @@ class _MainShellState extends State<MainShell> {
 
   @override
   Widget build(BuildContext context) {
-    // Dua daftar yang urutannya harus sama:
-    //   halaman = isi layar, menu = tombol di bawah.
+
+  print('MAIN SHELL BERJALAN');
+  print('ROLE USER: ${widget.user.role}');
+
+  // lanjutkan kode yang sudah ada
     List<Widget> halaman;
     List<BottomNavigationBarItem> menu;
 
@@ -45,16 +49,20 @@ class _MainShellState extends State<MainShell> {
       ];
     } else {
       halaman = [
-        const HomePage(),
-        const PlaceholderPage(title: 'Tiket Saya'),
+        HomePage(user: widget.user),
+        TicketPage(user: widget.user),
         ProfilePage(user: widget.user),
       ];
       menu = const [
         BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Beranda'),
-        BottomNavigationBarItem(icon: Icon(Icons.confirmation_number), label: 'Tiket Saya'),
+        BottomNavigationBarItem(
+            icon: Icon(Icons.confirmation_number), label: 'Tiket Saya'),
         BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profil'),
       ];
     }
+
+    debugPrint('ROLE USER: ${widget.user.role}');
+    debugPrint('HALAMAN TIKET: ${halaman[1].runtimeType}');
 
     return Scaffold(
       body: halaman[_index], // tampilkan halaman sesuai nomor tab

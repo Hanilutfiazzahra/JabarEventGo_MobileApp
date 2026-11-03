@@ -50,7 +50,7 @@ class _RegisterPageState extends State<RegisterPage> {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Registrasi berhasil, silakan masuk')),
     );
-    Navigator.pop(context);
+    Navigator.pop(context, user.email);
   }
 
   @override

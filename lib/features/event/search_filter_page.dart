@@ -1,11 +1,19 @@
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import '../../../core/dummy/dummy_events.dart';
+import '../../../core/dummy/dummy_users.dart';
 import 'event_provider.dart';
 import 'event_detail_page.dart';
 
 class SearchFilterPage extends StatelessWidget {
-  const SearchFilterPage({super.key});
+  final DummyUser user;
+
+  const SearchFilterPage({
+    super.key,
+    required this.user,
+  });
 
   final List<String> cities = const [
     'Semua',
@@ -43,7 +51,10 @@ class SearchFilterPage extends StatelessWidget {
                 DropdownButton<String>(
                   value: eventProvider.selectedCity,
                   items: cities.map((city) {
-                    return DropdownMenuItem(value: city, child: Text(city));
+                    return DropdownMenuItem(
+                      value: city,
+                      child: Text(city),
+                    );
                   }).toList(),
                   onChanged: (val) {
                     if (val != null) {
@@ -63,7 +74,9 @@ class SearchFilterPage extends StatelessWidget {
             const Divider(),
             Expanded(
               child: events.isEmpty
-                  ? const Center(child: Text('Event tidak ditemukan.'))
+                  ? const Center(
+                      child: Text('Event tidak ditemukan.'),
+                    )
                   : ListView.builder(
                       itemCount: events.length,
                       itemBuilder: (context, index) {
@@ -72,13 +85,18 @@ class SearchFilterPage extends StatelessWidget {
 
                         return ListTile(
                           title: Text(event.title),
-                          subtitle: Text('${venue?.regency ?? '-'} • ${event.category}'),
+                          subtitle: Text(
+                            '${venue?.regency ?? '-'} • ${event.category}',
+                          ),
                           trailing: const Icon(Icons.chevron_right),
                           onTap: () {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (_) => EventDetailPage(event: event),
+                                builder: (_) => EventDetailPage(
+                                  event: event,
+                                  user: user,
+                                ),
                               ),
                             );
                           },
