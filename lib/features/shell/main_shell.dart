@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../core/dummy/dummy_users.dart';
 import '../../core/widgets/placeholder_page.dart';
 import '../auth/profile_page.dart';
+import '../event/home_page.dart';
 
 /// Halaman utama dengan menu di bawah (bottom navigation).
 /// Menu berbeda untuk peserta dan penyelenggara (sesuai PRD 11.3).
@@ -44,7 +45,7 @@ class _MainShellState extends State<MainShell> {
       ];
     } else {
       halaman = [
-        const PlaceholderPage(title: 'Beranda'),
+        const HomePage(),
         const PlaceholderPage(title: 'Tiket Saya'),
         ProfilePage(user: widget.user),
       ];
