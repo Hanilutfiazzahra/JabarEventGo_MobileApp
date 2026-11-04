@@ -5,6 +5,8 @@ import '../../core/widgets/placeholder_page.dart';
 import '../auth/profile_page.dart';
 import '../event/home_page.dart';
 import '../ticket/ticket_page.dart';
+import '../checkin/beranda_penyelenggara_page.dart';
+import '../checkin/daftar_peserta_page.dart';
 
 /// Halaman utama dengan menu di bawah (bottom navigation).
 /// Menu berbeda untuk peserta dan penyelenggara (sesuai PRD 11.3).
@@ -26,21 +28,21 @@ class _MainShellState extends State<MainShell> {
 
   @override
   Widget build(BuildContext context) {
+    print('MAIN SHELL BERJALAN');
+    print('ROLE USER: ${widget.user.role}');
 
-  print('MAIN SHELL BERJALAN');
-  print('ROLE USER: ${widget.user.role}');
-
-  // lanjutkan kode yang sudah ada
+    // lanjutkan kode yang sudah ada
     List<Widget> halaman;
     List<BottomNavigationBarItem> menu;
 
     if (widget.user.role == 'penyelenggara') {
       halaman = [
-        const PlaceholderPage(title: 'Beranda Penyelenggara'),
+        BerandaPenyelenggaraPage(pengguna: widget.user),
         const PlaceholderPage(title: 'Kelola Event'),
-        const PlaceholderPage(title: 'Peserta'),
+        DaftarPesertaPage(pengguna: widget.user),
         ProfilePage(user: widget.user),
       ];
+
       menu = const [
         BottomNavigationBarItem(icon: Icon(Icons.dashboard), label: 'Beranda'),
         BottomNavigationBarItem(icon: Icon(Icons.event), label: 'Kelola Event'),
