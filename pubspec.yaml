@@ -1,0 +1,26 @@
+name: jabar_eventgo
+description: Jabar EventGo - aplikasi pencarian event, pendaftaran peserta, dan pengelolaan tiket di Jawa Barat.
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.3.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  provider: ^6.1.2
+  qr_flutter: ^4.1.0
+  # Anggota D: pilih poster dan simpan salinan di dokumen aplikasi.
+  image_picker: ^1.1.2
+  path_provider: ^2.1.5
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/images/
