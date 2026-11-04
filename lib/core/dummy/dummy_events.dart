@@ -1,16 +1,8 @@
-// lib/core/dummy/dummy_events.dart
-//
-// Data dummy BERSAMA untuk event dan venue (pemilik: Anggota D).
-// Dipakai B (Beranda, Detail Event), C (pendaftaran), D (Kelola Event), E (Beranda penyelenggara).
-// Nama field mengikuti PRD bagian 12 (events, venues).
-// Boleh MENAMBAH event untuk tes, tetapi JANGAN mengubah id yang sudah dipakai.
-// Setelah backend jadi, file ini tidak dipakai lagi.
-
 class DummyVenue {
   final int id;
   final String name;
   final String address;
-  final String regency; // kabupaten/kota
+  final String regency; 
   final String province;
   final double latitude;
   final double longitude;
@@ -26,21 +18,20 @@ class DummyVenue {
   });
 }
 
-/// event_status: 'draft' | 'dipublikasikan' | 'dibatalkan'
 class DummyEvent {
   final int id;
-  final int organizerId; // -> dummy_users.dart (penyelenggara)
+  final int organizerId; 
   final String title;
   final String description;
-  final String category; // seminar | musik | olahraga | budaya | ...
+  final String category; 
   final DateTime eventDate;
-  final String startTime; // 'HH:mm'
+  final String startTime;
   final String endTime;
-  final int venueId; // -> dummyVenues
-  final int ticketPrice; // 0 = Gratis
+  final int venueId; 
+  final int ticketPrice; 
   final int ticketQuota;
   String eventStatus;
-  final String posterUrl; // sementara boleh URL gambar contoh
+  final String posterUrl; 
 
   DummyEvent({
     required this.id,
@@ -66,7 +57,6 @@ const List<DummyVenue> dummyVenues = [
 ];
 
 final List<DummyEvent> dummyEvents = [
-  // Event 1: dipakai tiket JEG-7K3M9Q, JEG-A1B2C3, JEG-Q4W5E6
   DummyEvent(
     id: 1, organizerId: 201,
     title: 'Seminar Teknologi Jabar 2026',
@@ -75,7 +65,7 @@ final List<DummyEvent> dummyEvents = [
     venueId: 1, ticketPrice: 0, ticketQuota: 100, eventStatus: 'dipublikasikan',
     posterUrl: 'https://picsum.photos/seed/jeg1/600/400',
   ),
-  // Event 2: dipakai tiket JEG-Z9Y8X7 (untuk tes "tiket event lain")
+
   DummyEvent(
     id: 2, organizerId: 201,
     title: 'Festival Musik Bogor',
@@ -84,7 +74,7 @@ final List<DummyEvent> dummyEvents = [
     venueId: 2, ticketPrice: 0, ticketQuota: 200, eventStatus: 'dipublikasikan',
     posterUrl: 'https://picsum.photos/seed/jeg2/600/400',
   ),
-  // Event 3: kuota kecil, untuk tes "kuota penuh" milik C
+
   DummyEvent(
     id: 3, organizerId: 201,
     title: 'Workshop Batik Cirebon',
@@ -93,7 +83,7 @@ final List<DummyEvent> dummyEvents = [
     venueId: 3, ticketPrice: 0, ticketQuota: 1, eventStatus: 'dipublikasikan',
     posterUrl: 'https://picsum.photos/seed/jeg3/600/400',
   ),
-  // Event 4: masih draft, tidak tampil di Beranda peserta (untuk tes status)
+
   DummyEvent(
     id: 4, organizerId: 201,
     title: 'Fun Run Bandung',

@@ -111,11 +111,10 @@ class _EventFormPageState extends State<EventFormPage> {
     );
   }
 
-  // Pilih poster, periksa, dan salin ke folder dokumen aplikasi.
   Future<String?> pickPoster() async {
     final picker = ImagePicker();
     final photo = await picker.pickImage(source: ImageSource.gallery);
-    if (photo == null) return null; // Pengguna menutup galeri.
+    if (photo == null) return null; 
 
     final name = photo.name.toLowerCase();
     if (!name.endsWith('.jpg') && !name.endsWith('.jpeg') && !name.endsWith('.png')) {
@@ -125,7 +124,6 @@ class _EventFormPageState extends State<EventFormPage> {
       throw Exception('Ukuran maksimal 5 MB');
     }
 
-    // Pastikan file memang bisa dibaca sebagai gambar.
     final bytes = await photo.readAsBytes();
     final image = await decodeImageFromList(bytes);
     image.dispose();

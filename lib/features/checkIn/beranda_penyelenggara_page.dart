@@ -9,35 +9,41 @@ import 'daftar_peserta_page.dart';
 class BerandaPenyelenggaraPage extends StatelessWidget {
   final DummyUser pengguna;
 
+  // Fungsi pembuka form dikirim dari MainShell.
+  final VoidCallback onTambahEvent;
+
   const BerandaPenyelenggaraPage({
     super.key,
     required this.pengguna,
+    required this.onTambahEvent,
   });
 
   @override
   Widget build(BuildContext konteks) {
-    List<DummyEvent> daftarEventSaya = [];
+    // Ambil event yang dimiliki penyelenggara ini.
+    final List<DummyEvent> daftarEventSaya = [];
 
-    for (int nomor = 0; nomor < dummyEvents.length; nomor++) {
-      if (dummyEvents[nomor].organizerId == pengguna.id) {
-        daftarEventSaya.add(dummyEvents[nomor]);
+    for (final acara in dummyEvents) {
+      if (acara.organizerId == pengguna.id) {
+        daftarEventSaya.add(acara);
       }
     }
 
-    List<DummyEvent> daftarEventAktif = [];
+    // Ambil event yang dipublikasikan.
+    final List<DummyEvent> daftarEventAktif = [];
 
-    for (int nomor = 0; nomor < daftarEventSaya.length; nomor++) {
-      if (daftarEventSaya[nomor].eventStatus == 'dipublikasikan') {
-        daftarEventAktif.add(daftarEventSaya[nomor]);
+    for (final acara in daftarEventSaya) {
+      if (acara.eventStatus == 'dipublikasikan') {
+        daftarEventAktif.add(acara);
       }
     }
 
+    // Cari event mendatang dengan tanggal terdekat.
     DummyEvent? eventTerdekat;
+    final sekarang = DateTime.now();
 
-    for (int nomor = 0; nomor < daftarEventAktif.length; nomor++) {
-      DummyEvent acara = daftarEventAktif[nomor];
-
-      if (acara.eventDate.isAfter(DateTime.now())) {
+    for (final acara in daftarEventAktif) {
+      if (acara.eventDate.isAfter(sekarang)) {
         if (eventTerdekat == null) {
           eventTerdekat = acara;
         } else if (acara.eventDate.isBefore(eventTerdekat.eventDate)) {
@@ -46,21 +52,16 @@ class BerandaPenyelenggaraPage extends StatelessWidget {
       }
     }
 
-    String namaEventTerdekat = 'Belum ada event mendatang';
+    final namaEventTerdekat =
+        eventTerdekat?.title ?? 'Belum ada event mendatang';
 
-    if (eventTerdekat != null) {
-      namaEventTerdekat = eventTerdekat.title;
-    }
+    // Buat kartu kuota untuk setiap event aktif.
+    final List<Widget> daftarKartuEvent = [];
 
-    List<Widget> daftarKartuEvent = [];
-
-    for (int nomor = 0; nomor < daftarEventAktif.length; nomor++) {
-      DummyEvent acara = daftarEventAktif[nomor];
+    for (final acara in daftarEventAktif) {
       int jumlahPeserta = 0;
 
-      for (int urutan = 0; urutan < dummyRegistrations.length; urutan++) {
-        DummyRegistration pendaftaran = dummyRegistrations[urutan];
-
+      for (final pendaftaran in dummyRegistrations) {
         if (pendaftaran.eventId == acara.id &&
             pendaftaran.registrationStatus != 'dibatalkan') {
           jumlahPeserta++;
@@ -72,50 +73,15 @@ class BerandaPenyelenggaraPage extends StatelessWidget {
           child: ListTile(
             title: Text(acara.title),
             subtitle: Text(
-              jumlahPeserta.toString() +
-                  ' dari ' +
-                  acara.ticketQuota.toString() +
-                  ' peserta',
+              '$jumlahPeserta dari ${acara.ticketQuota} peserta',
             ),
           ),
         ),
       );
     }
 
-    Widget bagianKuota;
-
-    if (daftarKartuEvent.isEmpty) {
-      bagianKuota = const Card(
-        child: Padding(
-          padding: EdgeInsets.all(16),
-          child: Text('Belum ada event aktif.'),
-        ),
-      );
-    } else {
-      bagianKuota = Column(
-        children: daftarKartuEvent,
-      );
-    }
-
-    Widget tombolCheckIn = const SizedBox.shrink();
+    // Variabel lokal agar bisa digunakan oleh tombol check-in.
     final DummyEvent? acaraUntukCheckIn = eventTerdekat;
-
-    if (acaraUntukCheckIn != null) {
-      tombolCheckIn = OutlinedButton.icon(
-        onPressed: () {
-          Navigator.push(
-            konteks,
-            MaterialPageRoute(
-              builder: (konteks) {
-                return CheckInPage(acara: acaraUntukCheckIn);
-              },
-            ),
-          );
-        },
-        icon: const Icon(Icons.qr_code_scanner),
-        label: const Text('Buka check-in'),
-      );
-    }
 
     return Scaffold(
       appBar: AppBar(
@@ -124,19 +90,19 @@ class BerandaPenyelenggaraPage extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          Text('Halo, ' + pengguna.name),
+          Text('Halo, ${pengguna.name}'),
           const SizedBox(height: 8),
           const Text('Berikut ringkasan event kamu.'),
           const SizedBox(height: 16),
+
           Card(
             child: ListTile(
               leading: const Icon(Icons.event_available),
               title: const Text('Event aktif'),
-              subtitle: Text(
-                daftarEventAktif.length.toString() + ' event',
-              ),
+              subtitle: Text('${daftarEventAktif.length} event'),
             ),
           ),
+
           Card(
             child: ListTile(
               leading: const Icon(Icons.upcoming),
@@ -144,37 +110,63 @@ class BerandaPenyelenggaraPage extends StatelessWidget {
               subtitle: Text(namaEventTerdekat),
             ),
           ),
+
           const SizedBox(height: 12),
+
+          // Jalankan fungsi pembuka form dari MainShell.
           ElevatedButton.icon(
-            onPressed: () {
-              ScaffoldMessenger.of(konteks).showSnackBar(
-                const SnackBar(
-                  content: Text('Form tambah event belum tersedia.'),
-                ),
-              );
-            },
+            onPressed: onTambahEvent,
             icon: const Icon(Icons.add),
             label: const Text('Tambah Event'),
           ),
+
           const SizedBox(height: 16),
           const Text('Kuota terisi'),
-          bagianKuota,
+
+          if (daftarKartuEvent.isEmpty)
+            const Card(
+              child: Padding(
+                padding: EdgeInsets.all(16),
+                child: Text('Belum ada event aktif.'),
+              ),
+            )
+          else
+            Column(
+              children: daftarKartuEvent,
+            ),
+
           const SizedBox(height: 16),
+
           ElevatedButton.icon(
             onPressed: () {
               Navigator.push(
                 konteks,
                 MaterialPageRoute(
-                  builder: (konteks) {
-                    return DaftarPesertaPage(pengguna: pengguna);
-                  },
+                  builder: (context) => DaftarPesertaPage(
+                    pengguna: pengguna,
+                  ),
                 ),
               );
             },
             icon: const Icon(Icons.people),
             label: const Text('Lihat daftar peserta'),
           ),
-          tombolCheckIn,
+
+          if (acaraUntukCheckIn != null)
+            OutlinedButton.icon(
+              onPressed: () {
+                Navigator.push(
+                  konteks,
+                  MaterialPageRoute(
+                    builder: (context) => CheckInPage(
+                      acara: acaraUntukCheckIn,
+                    ),
+                  ),
+                );
+              },
+              icon: const Icon(Icons.qr_code_scanner),
+              label: const Text('Buka check-in'),
+            ),
         ],
       ),
     );
